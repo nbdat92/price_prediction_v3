@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Equity Curve</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style> body{font-family:system-ui;margin:16px;} #eq{height:75vh;} </style>
+</head>
+<body>
+  <h2>Equity Curve (LONG & SHORT)</h2>
+  <div id="eq"></div>
+  <script>
+    async function loadEq(){
+      const eq = await fetch('/api/equity').then(r=>r.json());
+      const trace = { x:eq.time, y:eq.equity, type:'scatter', mode:'lines', name:'equity' };
+      Plotly.newPlot('eq', [trace], {margin:{l:40,r:10,t:10,b:30}, yaxis:{title:'Equity'}});
+    }
+    loadEq();
+  </script>
+</body>
+</html>

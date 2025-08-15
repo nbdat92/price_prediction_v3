@@ -1,0 +1,7 @@
+flask
+pandas
+numpy
+lightgbm
+plotly
+MetaTrader5
+apscheduler

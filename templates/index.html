@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>AI Signals Trade FX</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:16px;}
+    #chart{height:72vh;}
+    .panel{display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin-bottom:8px;}
+    label{font-size:14px}
+    input,select,button{padding:4px 6px}
+  </style>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
+</head>
+<body>
+  <main>
+    <div class="container">
+      <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+      
+        <ul class="nav nav-pills">
+          <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
+          <li class="nav-item"><a href="/" class="nav-link">Donate</a></li>
+          <li class="nav-item"><a href="/" class="nav-link">About</a></li> </ul> 
+        </header> 
+      </div>
+
+  <div class="container">
+  <div class="col-md-12">
+  <strong><h2>Dự Đoán Xu Hướng FX</h2></strong><br>
+
+  <div class="panel">
+    <label>Symbol <input id="cfgSymbol" value="XAUUSDm" style="width:110px"></label>
+    <label>Timeframe
+      <select id="cfgTF">
+        <option>M1</option><option>M5</option><option selected>M15</option><option>M30</option>
+        <option>H1</option><option>H4</option><option>D1</option>
+      </select>
+    </label>
+    <label>From <input id="cfgFrom" type="date" value="2024-01-01"></label>
+    <label>To <input id="cfgTo" type="date"></label>
+    <label><input id="cfgAutoJob" type="checkbox" checked> Auto fetch & train</label>
+    <button id="btnSave" class="btn btn-primary">Lưu & Dự Đoán</button>
+
+    <span style="flex:1"></span>
+
+    <label>Number of candles: <input id="n" type="number" value="50" style="width:80px"></label>
+    <label>smooth <input id="smooth" type="number" value="5" style="width:60px"></label>
+    <label>stride <input id="stride" type="number" value="1" style="width:60px"></label>
+    <label><input id="showProb" type="checkbox" checked> Prob</label>
+    <label><input id="showMarkers" type="checkbox" checked> Markers</label>
+    <label><input id="autoRefresh" type="checkbox" checked> Auto-refresh</label>
+    <button id="refreshBtn" class="btn btn-primary">Refresh</button>
+  </div>
+<div class="card">
+  <div class="card-header card text-white bg-success">
+    <b>KẾT QUẢ</b>
+  </div>
+  <div class="card-body">
+      <div class="stat"><span id="latest">Đang bấm quẻ…</span></div>
+  </div>
+</div>
+  
+  <div id="chart"></div>
+
+  <script src="/static/app.js"></script>
+
+</div></div>
+<div class="container">
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <div class="col-md-4 d-flex align-items-center">
+      <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1" aria-label="Bootstrap"> <svg class="bi" width="30" height="24" aria-hidden="true"><use xlink:href="#bootstrap"></use></svg> </a>
+      <span class="mb-3 mb-md-0 text-body-secondary">© 2025 GIA CÁT ÂY AI, Inc</span> </div>
+      <ul class="nav col-md-4 justify-content-end list-unstyled d-flex"> 
+        <li class="ms-3"><a class="text-body-secondary" href="#" aria-label="Instagram"><svg class="bi" width="24" height="24" aria-hidden="true"><use xlink:href="#instagram"></use></svg></a></li> 
+        <li class="ms-3"><a class="text-body-secondary" href="#" aria-label="Facebook"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"></use></svg></a></li> 
+      </ul> 
+    </footer> 
+  </div>
+</main>
+</body>
+</html>
