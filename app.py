@@ -44,19 +44,53 @@ def _ensure_mt5():
 
 # ---------- FETCH CSV TỪ MT5 ----------
 def fetch_csv_from_mt5():
+    from datetime import timezone
+
+    def _floor_open_utc(dt_utc, tf_minutes):
+        tf_sec = tf_minutes * 60
+        ts = int(dt_utc.timestamp())
+        open_ts = (ts // tf_sec) * tf_sec
+        return datetime.fromtimestamp(open_ts, tz=timezone.utc)
+
     _ensure_mt5()
     symbol = SETTINGS["symbol"]
     tf_str = SETTINGS["timeframe"]
-    tf_enum, _ = TF_MAP[tf_str]
+    tf_enum, tf_minutes = TF_MAP[tf_str]
 
     if not mt5.symbol_select(symbol, True):
         mt5.shutdown()
         raise RuntimeError(f"Cannot select symbol {symbol}")
 
+    # --- FROM/TO chuẩn hoá về UTC (có tz) ---
     dt_from = datetime.fromisoformat(SETTINGS["from"])
-    dt_to = datetime.now() if SETTINGS["to"] is None else datetime.fromisoformat(SETTINGS["to"])
-    dt_to_eff = dt_to + timedelta(hours=12)  # tránh hụt phiên mở / múi giờ
+    if dt_from.tzinfo is None:
+        dt_from = dt_from.replace(tzinfo=timezone.utc)
+    else:
+        dt_from = dt_from.astimezone(timezone.utc)
 
+    if SETTINGS["to"] is None:
+        dt_to_raw = datetime.now(timezone.utc)
+    else:
+        dt_to_raw = datetime.fromisoformat(SETTINGS["to"])
+        if dt_to_raw.tzinfo is None:
+            dt_to_raw = dt_to_raw.replace(tzinfo=timezone.utc)
+        else:
+            dt_to_raw = dt_to_raw.astimezone(timezone.utc)
+
+    # --- CHỐT mốc TO = open(nến hiện tại) - 1 block (tương đương shift=1) ---
+    now_utc = datetime.now(timezone.utc)
+    current_open = _floor_open_utc(now_utc, tf_minutes)
+    last_closed_open = current_open - timedelta(minutes=tf_minutes)
+
+    # Nếu user đặt "to" xa hơn nến đã đóng -> hạ xuống last_closed_open
+    dt_to_eff = min(dt_to_raw, last_closed_open)
+
+    # Trường hợp cấu hình quá hẹp
+    if dt_to_eff <= dt_from:
+        # lấy tối thiểu 1 block
+        dt_to_eff = (dt_from if dt_from <= last_closed_open else last_closed_open)
+
+    # --- LẤY DỮ LIỆU ---
     rates = mt5.copy_rates_range(symbol, tf_enum, dt_from, dt_to_eff)
     mt5.shutdown()
 
@@ -64,14 +98,22 @@ def fetch_csv_from_mt5():
         raise RuntimeError("copy_rates_range returned empty")
 
     df = pd.DataFrame(rates)
-    df['Datetime'] = pd.to_datetime(df['time'], unit='s')
+    # time MT5 là epoch UTC -> giữ UTC có tzinfo
+    df['Datetime'] = pd.to_datetime(df['time'], unit='s', utc=True)
     df = df.set_index('Datetime').sort_index()
+
+    # --- PHÒNG HỜ: nếu lỡ dính nến hiện tại thì bỏ hàng cuối ---
+    # nến hiện tại có index == current_open
+    if not df.empty and df.index[-1] == current_open:
+        df = df.iloc[:-1]
+
     df = df[['open', 'high', 'low', 'close']].rename(columns=str.title)
 
     path = csv_path_for(tf_str)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     df.to_csv(path, sep=';')
     return path, len(df)
+
 
 #----------- TRAINING -----------------------------
 def tune_thresholds(y_true, y_prob, rets, costs_bp=2.0, deadzone=0.02):
