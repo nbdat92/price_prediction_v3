@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Signals Trade FX — Donate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0f172a;         /* slate-900 */
+      --surface: #111827;    /* gray-900 */
+      --muted: #94a3b8;      /* slate-400 */
+      --text: #e5e7eb;       /* gray-200 */
+      --primary: #22c55e;    /* green-500 */
+      --primary-600:#16a34a;
+      --ring: rgba(34,197,94,.35);
+      --card: #0b1220;       /* deep */
+      --border: #1f2937;     /* gray-800 */
+    }
+    *{ box-sizing: border-box }
+    html,body{ height:100% }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 20% -10%, #1e293b 0%, transparent 60%) no-repeat,
+                  radial-gradient(1000px 700px at 120% -20%, #064e3b 0%, transparent 60%) no-repeat,
+                  var(--bg);
+      color: var(--text);
+    }
+    a{ color: inherit; text-decoration: none }
+    .container{ width:100%; max-width: 1100px; margin: 0 auto; padding: 16px }
+
+    /* Header */
+    .header{ position: sticky; top:0; z-index:50; backdrop-filter: blur(10px); background: rgba(2,6,23,.6); border-bottom:1px solid var(--border) }
+    .brand{ display:flex; gap:10px; align-items:center; font-weight:700; letter-spacing:.2px }
+    .brand .dot{ width:10px; height:10px; border-radius:50%; background:var(--primary); box-shadow:0 0 18px var(--ring)}
+    nav ul{ list-style:none; display:flex; gap:8px; margin:0; padding:0; flex-wrap:wrap }
+    .chip{ padding:8px 12px; border-radius:10px; border:1px solid var(--border); color:var(--muted) }
+    .chip.active{ border-color: rgba(34,197,94,.45); color:#d1fae5; background: rgba(34,197,94,.08) }
+
+    /* Sections */
+    .page-title{ font-size:28px; margin:18px 0 8px }
+    .subtitle{ color:var(--muted); margin-bottom:18px }
+
+    .grid{ display:grid; gap:16px; grid-template-columns: 1fr }
+    @media (min-width: 992px){ .grid{ grid-template-columns: 1fr 1fr } }
+
+    .card{ background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)) , var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; box-shadow: 0 8px 24px rgba(2,6,23,.4) }
+    .card-header{ padding:14px 16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center }
+    .card-title{ font-size:14px; letter-spacing:.4px; color:#cbd5e1; text-transform:uppercase }
+    .card-body{ padding:16px }
+
+    .row{ display:flex; flex-wrap:wrap; gap:12px; align-items:center }
+    .col{ flex:1 1 280px }
+
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:10px; padding:10px 14px; border:1px solid var(--border); color:#e5e7eb; background:#0b1220; cursor:pointer; transition:.2s transform, .2s background, .2s border-color }
+    .btn:hover{ transform: translateY(-1px); border-color:#334155 }
+    .btn-primary{ background: linear-gradient(180deg, rgba(34,197,94,.15), rgba(34,197,94,.05)); border-color: rgba(34,197,94,.45) }
+    .btn-primary:hover{ background: linear-gradient(180deg, rgba(34,197,94,.25), rgba(34,197,94,.08)) }
+
+    .addr{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; word-break: break-all; color:#e2e8f0 }
+    .hint{ font-size: 13px; color:var(--muted) }
+    .qr{ width:160px; height:160px; object-fit:contain; border:1px solid var(--border); border-radius:12px; padding:6px; background:#fff }
+
+    .list{ list-style:none; padding:0; margin:0 }
+    .list li{ margin:6px 0 }
+
+    .footer{ border-top:1px solid var(--border); color:var(--muted) }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:12px">
+      <div class="brand">
+        <span class="dot" aria-hidden="true"></span>
+        <a href="/" aria-label="AI Signals Trade FX Home">AI Signals Trade FX</a>
+      </div>
+      <nav aria-label="Main Navigation">
+        <ul>
+          <li><a class="chip" href="/">Home</a></li>
+          <li><a class="chip active" href="/donate">Donate</a></li>
+          <li><a class="chip" href="/about">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:20px">
+    <h1 class="page-title">Donate</h1>
+    <p class="subtitle">Cảm ơn bạn đã ủng hộ <strong>AI Signals Trade FX</strong>. Mọi khoản đóng góp giúp duy trì server, phát triển tính năng và mở rộng cộng đồng.</p>
+
+    <!-- PAYPAL + BANK -->
+    <section class="grid" aria-label="Các kênh ủng hộ">
+      <!-- PayPal -->
+      <div class="card" aria-labelledby="paypalTitle">
+        <div class="card-header">
+          <h2 id="paypalTitle" class="card-title">PayPal</h2>
+        </div>
+        <div class="card-body">
+          <p class="hint">Email nhận ủng hộ</p>
+          <p class="addr" id="paypalEmail">nbdat92@gmail.com</p>
+          <div class="row">
+            <a class="btn btn-primary" href="https://www.paypal.com/paypalme/nbdat92" target="_blank" rel="noopener">Ủng hộ qua PayPal</a>
+            <button class="btn" data-address="nbdat92@gmail.com" onclick="copyAddress(this)">Copy email</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bank transfer -->
+      <div class="card" aria-labelledby="bankTitle">
+        <div class="card-header">
+          <h2 id="bankTitle" class="card-title">Chuyển khoản ngân hàng (VN)</h2>
+        </div>
+        <div class="card-body">
+          <div class="row" style="align-items:flex-start">
+            <div class="col">
+              <ul class="list">
+                <li><strong>Ngân hàng:</strong> CIMB Bank</li>
+                <li><strong>Tên tài khoản:</strong> NGUYỄN BÁ ĐẠT</li>
+                <li><strong>Số tài khoản:</strong> <span class="addr" id="bankAcc">00336501036493</span></li>
+                <li><strong>Nội dung CK gợi ý:</strong> <span class="addr">Donate AI Signals</span></li>
+              </ul>
+              <div class="row">
+                <button class="btn" data-address="00336501036493" onclick="copyAddress(this)">Copy số tài khoản</button>
+              </div>
+            </div>
+            <div class="col" style="flex:0 0 180px; text-align:center">
+              <img class="qr" src="https://datnguyentv.com/vps/bank.webp" alt="QR tài khoản ngân hàng" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CRYPTO -->
+    <section class="card" style="margin-top:16px" aria-labelledby="cryptoTitle">
+      <div class="card-header">
+        <h2 id="cryptoTitle" class="card-title">Crypto (BTC / ETH / USDT / BNB)</h2>
+      </div>
+      <div class="card-body">
+        <div class="grid" style="grid-template-columns: 1fr; gap:18px">
+          <div class="row" style="justify-content:space-between; align-items:flex-start; gap:16px">
+            <div class="col">
+              <h3 style="margin:0 0 6px">Bitcoin (BTC)</h3>
+              <div class="addr">bc1qucdgjdpuwe65d8xv0a49aze3mfk4nv98r4fnlu</div>
+              <div class="row" style="margin-top:8px">
+                <button class="btn" data-address="bc1qucdgjdpuwe65d8xv0a49aze3mfk4nv98r4fnlu" onclick="copyAddress(this)">Copy BTC</button>
+                <img class="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=bc1qucdgjdpuwe65d8xv0a49aze3mfk4nv98r4fnlu" alt="QR BTC" />
+              </div>
+            </div>
+
+            <div class="col">
+              <h3 style="margin:0 0 6px">Ethereum (ETH)</h3>
+              <div class="addr">0xcA471813d345D1d82733be8D4B6d6d5C8DD4c4BD</div>
+              <div class="row" style="margin-top:8px">
+                <button class="btn" data-address="0xcA471813d345D1d82733be8D4B6d6d5C8DD4c4BD" onclick="copyAddress(this)">Copy ETH</button>
+                <img class="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=0xcA471813d345D1d82733be8D4B6d6d5C8DD4c4BD" alt="QR ETH" />
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="justify-content:space-between; align-items:flex-start; gap:16px">
+            <div class="col">
+              <h3 style="margin:0 0 6px">USDT (ERC20)</h3>
+              <div class="addr">0xcA471813d345D1d82733be8D4B6d6d5C8DD4c4BD</div>
+              <div class="row" style="margin-top:8px">
+                <button class="btn" data-address="0xcA471813d345D1d82733be8D4B6d6d5C8DD4c4BD" onclick="copyAddress(this)">Copy USDT-ERC20</button>
+                <img class="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=0xcA471813d345D1d82733be8D4B6d6d5C8DD4c4BD" alt="QR USDT ERC20" />
+              </div>
+              <p class="hint" style="margin-top:6px">USDT-ERC20 dùng địa chỉ chuẩn Ethereum (0x...).</p>
+            </div>
+
+            <div class="col">
+              <h3 style="margin:0 0 6px">USDT (TRC20)</h3>
+              <div class="addr">TDG3s9bNzEuuGsJtNkMovNhQvvdDPYLjdy</div>
+              <div class="row" style="margin-top:8px">
+                <button class="btn" data-address="TDG3s9bNzEuuGsJtNkMovNhQvvdDPYLjdy" onclick="copyAddress(this)">Copy USDT-TRC20</button>
+                <img class="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TDG3s9bNzEuuGsJtNkMovNhQvvdDPYLjdy" alt="QR USDT TRC20" />
+              </div>
+              <p class="hint" style="margin-top:6px">USDT-TRC20 dùng địa chỉ mạng Tron (bắt đầu bằng chữ <strong>T</strong>).</p>
+            </div>
+          </div>
+
+          <div class="row" style="justify-content:space-between; align-items:flex-start; gap:16px">
+            <div class="col">
+              <h3 style="margin:0 0 6px">BNB Smart Chain (BEP20)</h3>
+              <div class="addr">0xcA471813d345D1d82733be8D4B6d6d5C8DD4c4BD</div>
+              <div class="row" style="margin-top:8px">
+                <button class="btn" data-address="0xcA471813d345D1d82733be8D4B6d6d5C8DD4c4BD" onclick="copyAddress(this)">Copy BNB (BEP20)</button>
+                <img class="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=0xcA471813d345D1d82733be8D4B6d6d5C8DD4c4BD" alt="QR BNB BEP20" />
+              </div>
+              <p class="hint" style="margin-top:6px">Địa chỉ BEP20 cũng có dạng 0x giống Ethereum, nhưng trên mạng BSC.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Thanks -->
+    <section class="card" style="margin-top:16px" aria-labelledby="thanksTitle">
+      <div class="card-header">
+        <h2 id="thanksTitle" class="card-title">Lời cảm ơn</h2>
+      </div>
+      <div class="card-body">
+        <p>Cảm ơn bạn đã ủng hộ dự án <strong>AI Signals Trade FX</strong>! Mọi khoản donate sẽ được dùng để duy trì server, phát triển tính năng mới và mở rộng cộng đồng.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container footer" style="padding:28px 16px 40px">
+    <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between">
+      <div>© 2025 <strong>GIA CÁT ÂY AI, Inc</strong></div>
+      <div style="display:flex; gap:10px">
+        <a class="chip" href="https://facebook.com" aria-label="Facebook">Facebook</a>
+        <a class="chip" href="https://instagram.com" aria-label="Instagram">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function copyAddress(btn){
+      const text = btn.getAttribute('data-address');
+      if(!text) return;
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(()=>{ flashCopied(btn); }).catch(()=>{ fallbackCopy(text, btn); });
+      } else { fallbackCopy(text, btn); }
+    }
+    function fallbackCopy(text, btn){
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); flashCopied(btn); }
+      catch(e){ alert('Copy thất bại, vui lòng copy thủ công.'); }
+      document.body.removeChild(ta);
+    }
+    function flashCopied(btn){
+      const original = btn.textContent; btn.textContent = 'Đã copy ✓'; btn.disabled = true;
+      setTimeout(()=>{ btn.textContent = original; btn.disabled = false; }, 1500);
+    }
+  </script>
+</body>
+</html>

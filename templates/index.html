@@ -1,84 +1,221 @@
 <!doctype html>
-<html>
+<html lang="vi">
 <head>
   <meta charset="utf-8" />
-  <title>AI Signals Trade FX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Signals Trade FX — v2</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:16px;}
-    #chart{height:72vh;}
-    .panel{display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin-bottom:8px;}
-    label{font-size:14px}
-    input,select,button{padding:4px 6px}
-  </style>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    :root{
+      --bg: #0f172a;         /* slate-900 */
+      --surface: #111827;    /* gray-900 */
+      --muted: #94a3b8;      /* slate-400 */
+      --text: #e5e7eb;       /* gray-200 */
+      --primary: #22c55e;    /* green-500 */
+      --primary-600:#16a34a;
+      --ring: rgba(34,197,94,.35);
+      --card: #0b1220;       /* custom deep */
+      --border: #1f2937;     /* gray-800 */
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#0f172a; }
+    }
+    *{ box-sizing: border-box }
+    html,body{ height:100% }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 20% -10%, #1e293b 0%, transparent 60%) no-repeat,
+                  radial-gradient(1000px 700px at 120% -20%, #064e3b 0%, transparent 60%) no-repeat,
+                  var(--bg);
+      color: var(--text);
+    }
+    a{ color: inherit; text-decoration: none }
+    .container{ width:100%; max-width: 1200px; margin: 0 auto; padding: 16px }
 
+    /* Header */
+    .header{
+      position: sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background: rgba(2,6,23,.6); /* slate-950 */
+      border-bottom: 1px solid var(--border);
+    }
+    .brand{
+      display:flex; gap:10px; align-items:center; font-weight:700; letter-spacing:.2px;
+    }
+    .brand .dot{ width:10px; height:10px; border-radius:50%; background:var(--primary); box-shadow:0 0 18px var(--ring)}
+    nav ul{ list-style:none; display:flex; gap:8px; margin:0; padding:0 }
+    .chip{ padding:8px 12px; border-radius:10px; border:1px solid var(--border); color:var(--muted) }
+    .chip.active{ border-color: rgba(34,197,94,.45); color:#d1fae5; background: rgba(34,197,94,.08) }
+
+    /* Layout */
+    .grid{
+      display:grid; gap:16px; grid-template-columns: 1fr; align-items:start;
+    }
+    @media (min-width: 1024px){ .grid{ grid-template-columns: 340px 1fr } }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)) , var(--card);
+      border:1px solid var(--border); border-radius:16px; overflow:hidden;
+      box-shadow: 0 8px 24px rgba(2,6,23,.4);
+    }
+    .card-header{ padding:14px 16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center }
+    .card-title{ font-size:14px; letter-spacing:.4px; color:#cbd5e1; text-transform:uppercase }
+    .card-body{ padding:16px }
+
+    /* Forms */
+    .form-grid{ display:grid; gap:12px; grid-template-columns: 1fr 1fr }
+    .form-row{ display:flex; gap:10px; align-items:end; flex-wrap: wrap }
+    .field{ display:flex; flex-direction:column; gap:6px; min-width: 0 }
+    .field label{ font-size:12px; color:var(--muted) }
+    .input, select, input[type="date"], input[type="number"]{
+      width:100%; background:#0b1220; color:#e5e7eb;
+      border:1px solid var(--border); border-radius:10px; padding:10px 12px;
+      outline:none; transition:.15s border-color, .15s box-shadow;
+    }
+    .input:focus, select:focus, input[type="date"]:focus, input[type="number"]:focus{
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+    .switch{ display:flex; gap:10px; align-items:center }
+    .switch input{ width:18px; height:18px }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      border-radius:10px; padding:10px 14px; border:1px solid var(--border);
+      color:#e5e7eb; background:#0b1220; cursor:pointer; transition:.2s transform, .2s background, .2s border-color;
+    }
+    .btn:hover{ transform: translateY(-1px); border-color:#334155 }
+    .btn-primary{ background: linear-gradient(180deg, rgba(34,197,94,.15), rgba(34,197,94,.05)); border-color: rgba(34,197,94,.45) }
+    .btn-primary:hover{ background: linear-gradient(180deg, rgba(34,197,94,.25), rgba(34,197,94,.08)) }
+    .btn-ghost{ background: transparent }
+
+    /* Result Stat */
+    .stat{ font-size: 15px; color:#e2e8f0 }
+    .badge{ padding:6px 10px; border-radius:999px; border:1px solid var(--border); color:#a7f3d0; background: rgba(16,185,129,.08); font-size:12px }
+
+    /* Chart */
+    #chart{ height: 66vh }
+    @media (max-width: 768px){ #chart{ height: 52vh } }
+
+    /* Footer */
+    .footer{ border-top:1px solid var(--border); color:var(--muted) }
+
+    /* Utilities */
+    .row{ display:flex; flex-wrap:wrap; gap:12px }
+    .grow{ flex: 1 1 auto }
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
+  </style>
 </head>
 <body>
-  <main>
-    <div class="container">
-      <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-      
-        <ul class="nav nav-pills">
-          <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
-          <li class="nav-item"><a href="/" class="nav-link">Donate</a></li>
-          <li class="nav-item"><a href="/" class="nav-link">About</a></li> </ul> 
-        </header> 
+  <!-- Header -->
+  <header class="header">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:12px">
+      <div class="brand">
+        <span class="dot" aria-hidden="true"></span>
+        <a href="/" aria-label="AI Signals Trade FX Home">AI Signals Trade FX</a>
       </div>
+      <nav aria-label="Main Navigation">
+        <ul>
+          <li><a class="chip active" href="/">Home</a></li>
+          <li><a class="chip" href="/donate">Donate</a></li>
+          <li><a class="chip" href="/about">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-  <div class="container">
-  <div class="col-md-12">
-  <strong><h2>Dự Đoán Xu Hướng FX</h2></strong><br>
+  <main class="container" style="padding-top:20px">
+    <div class="grid">
+      <!-- Settings Card -->
+      <section class="card" aria-labelledby="settingsTitle">
+        <div class="card-header">
+          <div>
+            <h2 id="settingsTitle" class="card-title">Thiết lập dự đoán</h2>
+            <p class="sr-only">Điền thông số và nhấn Lưu & Dự đoán để chạy</p>
+          </div>
+          <div class="row">
+            <button id="btnSave" class="btn btn-primary" title="Lưu & Dự đoán">💾 Lưu & Dự đoán</button>
+            <button id="refreshBtn" class="btn" title="Làm mới đồ thị">⟳ Refresh</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="cfgSymbol">Symbol</label>
+              <input id="cfgSymbol" class="input" value="XAUUSDm" placeholder="e.g. EURUSD" />
+            </div>
+            <div class="field">
+              <label for="cfgTF">Timeframe</label>
+              <select id="cfgTF">
+                <option>M1</option><option>M5</option><option selected>M15</option><option>M30</option>
+                <option>H1</option><option>H4</option><option>D1</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="cfgFrom">From</label>
+              <input id="cfgFrom" type="date" class="input" value="2024-01-01" />
+            </div>
+            <div class="field">
+              <label for="cfgTo">To</label>
+              <input id="cfgTo" type="date" class="input" />
+            </div>
+          </div>
 
-  <div class="panel">
-    <label>Symbol <input id="cfgSymbol" value="XAUUSDm" style="width:110px"></label>
-    <label>Timeframe
-      <select id="cfgTF">
-        <option>M1</option><option>M5</option><option selected>M15</option><option>M30</option>
-        <option>H1</option><option>H4</option><option>D1</option>
-      </select>
-    </label>
-    <label>From <input id="cfgFrom" type="date" value="2024-01-01"></label>
-    <label>To <input id="cfgTo" type="date"></label>
-    <label><input id="cfgAutoJob" type="checkbox" checked> Auto fetch & train</label>
-    <button id="btnSave" class="btn btn-primary">Lưu & Dự Đoán</button>
+          <hr style="border:none; border-top:1px solid var(--border); margin:16px 0" />
 
-    <span style="flex:1"></span>
+          <div class="row">
+            <div class="field" style="min-width:160px">
+              <label for="n">Số nến hiển thị</label>
+              <input id="n" type="number" class="input" value="50" />
+            </div>
+            <div class="field" style="min-width:140px">
+              <label for="smooth">Smooth</label>
+              <input id="smooth" type="number" class="input" value="5" />
+            </div>
+            <div class="field" style="min-width:140px">
+              <label for="stride">Stride</label>
+              <input id="stride" type="number" class="input" value="1" />
+            </div>
+            <div class="grow"></div>
+            <label class="switch"><input id="showProb" type="checkbox" checked> <span>Hiển thị xác suất</span></label>
+            <label class="switch"><input id="showMarkers" type="checkbox" checked> <span>Markers</span></label>
+            <label class="switch"><input id="autoRefresh" type="checkbox" checked> <span>Tự làm mới</span></label>
+            <label class="switch"><input id="cfgAutoJob" type="checkbox" checked> <span>Auto fetch & train</span></label>
+          </div>
+        </div>
+      </section>
 
-    <label>Number of candles: <input id="n" type="number" value="50" style="width:80px"></label>
-    <label>smooth <input id="smooth" type="number" value="5" style="width:60px"></label>
-    <label>stride <input id="stride" type="number" value="1" style="width:60px"></label>
-    <label><input id="showProb" type="checkbox" checked> Prob</label>
-    <label><input id="showMarkers" type="checkbox" checked> Markers</label>
-    <label><input id="autoRefresh" type="checkbox" checked> Auto-refresh</label>
-    <button id="refreshBtn" class="btn btn-primary">Refresh</button>
-  </div>
-<div class="card">
-  <div class="card-header card text-white bg-success">
-    <b>KẾT QUẢ</b>
-  </div>
-  <div class="card-body">
-      <div class="stat"><span id="latest">Đang bấm quẻ…</span></div>
-  </div>
-</div>
-  
-  <div id="chart"></div>
+      <!-- Result Card -->
+      <section class="card" aria-labelledby="resultTitle">
+        <div class="card-header" style="border-left:3px solid var(--primary)">
+          <h2 id="resultTitle" class="card-title">KẾT QUẢ</h2>
+          <span class="badge">Trạng thái</span>
+        </div>
+        <div class="card-body">
+          <div class="stat"><span id="latest">Đang bấm quẻ…</span></div>
+        </div>
+        <div class="card-body" style="padding-top:0">
+          <div id="chart" role="img" aria-label="Biểu đồ dự đoán"></div>
+        </div>
+      </section>
+    </div>
+  </main>
 
+  <footer class="container footer" style="padding:28px 16px 40px">
+    <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between">
+      <div>© 2025 <strong>GIA CÁT ÂY AI, Inc</strong></div>
+      <div style="display:flex; gap:10px">
+        <a class="chip" href="https://facebook.com" aria-label="Facebook">Facebook</a>
+        <a class="chip" href="https://instagram.com" aria-label="Instagram">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Keep your original JS API unchanged: same element IDs -->
   <script src="/static/app.js"></script>
-
-</div></div>
-<div class="container">
-  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-    <div class="col-md-4 d-flex align-items-center">
-      <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1" aria-label="Bootstrap"> <svg class="bi" width="30" height="24" aria-hidden="true"><use xlink:href="#bootstrap"></use></svg> </a>
-      <span class="mb-3 mb-md-0 text-body-secondary">© 2025 GIA CÁT ÂY AI, Inc</span> </div>
-      <ul class="nav col-md-4 justify-content-end list-unstyled d-flex"> 
-        <li class="ms-3"><a class="text-body-secondary" href="#" aria-label="Instagram"><svg class="bi" width="24" height="24" aria-hidden="true"><use xlink:href="#instagram"></use></svg></a></li> 
-        <li class="ms-3"><a class="text-body-secondary" href="#" aria-label="Facebook"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"></use></svg></a></li> 
-      </ul> 
-    </footer> 
-  </div>
-</main>
 </body>
 </html>

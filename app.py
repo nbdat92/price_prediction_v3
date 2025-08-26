@@ -206,6 +206,14 @@ def index():
 def equity():
     return render_template("equity.html")
 
+@app.route("/donate")
+def donate():
+    return render_template("donate.html")
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
 @app.route("/api/candles")
 def api_candles():
     n = int(request.args.get("n", 50)) #số cây nến

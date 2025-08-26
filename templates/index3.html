@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Signals Trade FX</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+  <style>
+    :root {
+      --card-radius: 1rem;
+    }
+    body{font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif;}
+    .navbar-blur{backdrop-filter: saturate(180%) blur(12px);}
+    .app-card{border:0; border-radius:var(--card-radius); box-shadow: 0 10px 24px rgba(0,0,0,.06);} 
+    #chart{height:72vh;}
+    .sticky-actions{position: sticky; bottom: 0; z-index: 1030;}
+
+    /* Dark mode */
+    html[data-theme="dark"] {
+      color-scheme: dark;
+    }
+    html[data-theme="dark"] body{
+      background: #0f1115;
+      color: #e6e6e6;
+    }
+    html[data-theme="dark"] .app-card{
+      background: #171a21; box-shadow: 0 10px 24px rgba(0,0,0,.35);
+    }
+    html[data-theme="dark"] .form-control, html[data-theme="dark"] .form-select{
+      background-color:#0f1115; color:#e6e6e6; border-color:#2a2f3a;
+    }
+    html[data-theme="dark"] .navbar{background: rgba(23,26,33,.75)!important;border-bottom:1px solid #2a2f3a;}
+
+    @media (max-width: 576px){
+      #chart{height:58vh;}
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-blur sticky-top shadow-sm">
+    <div class="container-xxl">
+      <a class="navbar-brand fw-semibold" href="/">
+        <i class="bi bi-graph-up-arrow me-2"></i>AI Signals Trade FX
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/donate">Donate</a></li>
+          <li class="nav-item"><a class="nav-link" href="/">About</a></li>
+        </ul>
+        <div class="ms-lg-3 d-flex align-items-center gap-2">
+          <div class="form-check form-switch m-0">
+            <input class="form-check-input" type="checkbox" role="switch" id="themeToggle">
+            <label class="form-check-label" for="themeToggle"><i class="bi bi-moon-stars"></i></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="py-4">
+    <div class="container-xxl">
+      <!-- TITLE & STATUS -->
+      <div class="row g-4 align-items-stretch">
+        <div class="col-12 col-lg-7">
+          <div class="app-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h1 class="h4 mb-0">Dự đoán xu hướng FX</h1>
+              <span class="badge text-bg-success d-none d-lg-inline-flex"><i class="bi bi-lightning-charge me-1"></i> Realtime</span>
+            </div>
+            <p class="text-secondary mb-0">Chọn biểu tượng, khung thời gian và khoảng ngày. Tùy chọn nâng cao trong phần <strong>Advanced</strong>.</p>
+          </div>
+        </div>
+        <div class="col-12 col-lg-5">
+          <div class="card app-card h-100">
+            <div class="card-header bg-success text-white fw-semibold" style="border-top-left-radius:var(--card-radius);border-top-right-radius:var(--card-radius);">
+              <i class="bi bi-activity me-2"></i>Kết quả
+            </div>
+            <div class="card-body">
+              <div class="d-flex align-items-center gap-3">
+                <div class="spinner-border" role="status" aria-hidden="true"></div>
+                <div class="small"><span id="latest">Đang bấm quẻ…</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="row g-4 mt-1">
+        <div class="col-12">
+          <div class="card app-card">
+            <div class="card-body">
+              <form class="row g-3">
+                <!-- Basic controls -->
+                <div class="col-6 col-md-3">
+                  <label class="form-label">Symbol</label>
+                  <input id="cfgSymbol" class="form-control" value="XAUUSDm" />
+                </div>
+                <div class="col-6 col-md-3">
+                  <label class="form-label">Timeframe</label>
+                  <select id="cfgTF" class="form-select">
+                    <option>M1</option><option>M5</option><option selected>M15</option><option>M30</option>
+                    <option>H1</option><option>H4</option><option>D1</option>
+                  </select>
+                </div>
+                <div class="col-6 col-md-3">
+                  <label class="form-label">From</label>
+                  <input id="cfgFrom" class="form-control" type="date" value="2024-01-01" />
+                </div>
+                <div class="col-6 col-md-3">
+                  <label class="form-label">To</label>
+                  <input id="cfgTo" class="form-control" type="date" />
+                </div>
+
+                <div class="col-12 d-flex flex-wrap gap-2 align-items-center">
+                  <div class="form-check">
+                    <input id="cfgAutoJob" class="form-check-input" type="checkbox" checked />
+                    <label class="form-check-label" for="cfgAutoJob">Auto fetch & train</label>
+                  </div>
+                  <button id="btnSave" type="button" class="btn btn-primary">
+                    <i class="bi bi-magic me-1"></i> Lưu & Dự đoán
+                  </button>
+                </div>
+
+                <!-- Advanced accordion -->
+                <div class="col-12">
+                  <div class="accordion mt-2" id="adv">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#adv1">
+                          Advanced
+                        </button>
+                      </h2>
+                      <div id="adv1" class="accordion-collapse collapse" data-bs-parent="#adv">
+                        <div class="accordion-body">
+                          <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                              <label class="form-label">Number of candles</label>
+                              <input id="n" type="number" value="50" class="form-control" />
+                            </div>
+                            <div class="col-6 col-md-3">
+                              <label class="form-label">Smooth</label>
+                              <input id="smooth" type="number" value="5" class="form-control" />
+                            </div>
+                            <div class="col-6 col-md-3">
+                              <label class="form-label">Stride</label>
+                              <input id="stride" type="number" value="1" class="form-control" />
+                            </div>
+                            <div class="col-12 col-md-6 d-flex flex-wrap gap-3 align-items-center">
+                              <div class="form-check">
+                                <input id="showProb" class="form-check-input" type="checkbox" checked />
+                                <label class="form-check-label" for="showProb">Prob</label>
+                              </div>
+                              <div class="form-check">
+                                <input id="showMarkers" class="form-check-input" type="checkbox" checked />
+                                <label class="form-check-label" for="showMarkers">Markers</label>
+                              </div>
+                              <div class="form-check">
+                                <input id="autoRefresh" class="form-check-input" type="checkbox" checked />
+                                <label class="form-check-label" for="autoRefresh">Auto-refresh</label>
+                              </div>
+                              <button id="refreshBtn" type="button" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-repeat me-1"></i> Refresh
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+            <!-- Sticky action bar on mobile -->
+            <div class="sticky-actions bg-body-tertiary border-top d-md-none p-3 rounded-bottom">
+              <div class="d-flex gap-2">
+                <button id="btnSave_mobile" type="button" class="btn btn-primary flex-grow-1">
+                  <i class="bi bi-magic me-1"></i> Lưu & Dự đoán
+                </button>
+                <button id="refreshBtn_mobile" type="button" class="btn btn-outline-secondary">
+                  <i class="bi bi-arrow-repeat"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHART -->
+      <div class="row g-4 mt-1">
+        <div class="col-12">
+          <div class="card app-card">
+            <div class="card-header bg-body-tertiary"><i class="bi bi-candlestick me-2"></i>Biểu đồ</div>
+            <div class="card-body p-2 p-sm-3">
+              <div id="chart"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="mt-5 pt-4 border-top">
+        <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-bootstrap-fill"></i>
+            <span class="text-secondary">© 2025 GIA CÁT ÂY AI, Inc</span>
+          </div>
+          <div class="d-flex align-items-center gap-3 fs-5">
+            <a class="text-secondary" href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a class="text-secondary" href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- Your logic -->
+  <script src="/static/app.js"></script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Keep old IDs compatible with app.js. Extra: theme toggle + mobile buttons wiring.
+    (function(){
+      const html = document.documentElement;
+      const themeToggle = document.getElementById('themeToggle');
+      const saved = localStorage.getItem('theme');
+      if(saved){ html.setAttribute('data-theme', saved); themeToggle.checked = saved === 'dark'; }
+      themeToggle?.addEventListener('change', () => {
+        const next = themeToggle.checked ? 'dark' : 'light';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+      });
+
+      // Mirror mobile buttons to desktop ones so existing handlers work
+      const btnSave = document.getElementById('btnSave');
+      const btnSaveMobile = document.getElementById('btnSave_mobile');
+      const refreshBtn = document.getElementById('refreshBtn');
+      const refreshBtnMobile = document.getElementById('refreshBtn_mobile');
+      btnSaveMobile?.addEventListener('click', () => btnSave?.click());
+      refreshBtnMobile?.addEventListener('click', () => refreshBtn?.click());
+    })();
+  </script>
+</body>
+</html>

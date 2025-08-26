@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Signals Trade FX — About</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f172a; --surface:#111827; --muted:#94a3b8; --text:#e5e7eb;
+      --primary:#22c55e; --ring:rgba(34,197,94,.35); --card:#0b1220; --border:#1f2937;
+    }
+    *{ box-sizing: border-box }
+    html,body{ height:100% }
+    body{ margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; color:var(--text);
+      background: radial-gradient(1200px 800px at 20% -10%, #1e293b 0%, transparent 60%) no-repeat,
+                  radial-gradient(1000px 700px at 120% -20%, #064e3b 0%, transparent 60%) no-repeat,
+                  var(--bg);
+    }
+    a{ color:inherit; text-decoration:none }
+    .container{ width:100%; max-width:1100px; margin:0 auto; padding:16px }
+    .header{ position:sticky; top:0; z-index:50; backdrop-filter:blur(10px); background:rgba(2,6,23,.6); border-bottom:1px solid var(--border) }
+    .brand{ display:flex; gap:10px; align-items:center; font-weight:700 }
+    .brand .dot{ width:10px; height:10px; border-radius:50%; background:var(--primary); box-shadow:0 0 18px var(--ring) }
+    nav ul{ list-style:none; display:flex; gap:8px; margin:0; padding:0; flex-wrap:wrap }
+    .chip{ padding:8px 12px; border-radius:10px; border:1px solid var(--border); color:var(--muted) }
+    .chip.active{ border-color:rgba(34,197,94,.45); color:#d1fae5; background:rgba(34,197,94,.08) }
+
+    .page-title{ font-size:28px; margin:18px 0 6px }
+    .subtitle{ color:var(--muted); margin-bottom:18px }
+    .grid{ display:grid; gap:16px; grid-template-columns:1fr }
+    @media(min-width:992px){ .grid.two{ grid-template-columns: 1.1fr .9fr } }
+
+    .card{ background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)), var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; box-shadow:0 8px 24px rgba(2,6,23,.4) }
+    .card-header{ padding:14px 16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center }
+    .card-title{ font-size:14px; letter-spacing:.4px; color:#cbd5e1; text-transform:uppercase }
+    .card-body{ padding:16px }
+
+    .lead{ font-size:18px; line-height:1.6 }
+    .list{ list-style:none; margin:0; padding:0 }
+    .list li{ margin:8px 0; color:#e2e8f0 }
+
+    .kpis{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px }
+    @media(min-width:768px){ .kpis{ grid-template-columns: repeat(4, minmax(0,1fr)) } }
+    .kpi{ background:#0c1424; border:1px solid var(--border); border-radius:14px; padding:14px }
+    .kpi .num{ font-size:22px; font-weight:700 }
+    .kpi .cap{ color:var(--muted); font-size:13px }
+
+    .team{ display:grid; grid-template-columns: repeat(1,minmax(0,1fr)); gap:12px }
+    @media(min-width:700px){ .team{ grid-template-columns: repeat(3,minmax(0,1fr)) } }
+    .member{ display:flex; gap:12px; align-items:center; background:#0c1424; border:1px solid var(--border); border-radius:14px; padding:12px }
+    .avatar{ width:48px; height:48px; border-radius:12px; background:#0f1a2d; display:grid; place-items:center; border:1px solid #1e2a42 }
+    .avatar span{ font-weight:700 }
+    .role{ color:var(--muted); font-size:13px }
+
+    .timeline{ position:relative; padding-left:18px; }
+    .timeline::before{ content:""; position:absolute; left:6px; top:0; bottom:0; width:2px; background:#1f2a40 }
+    .t-item{ position:relative; margin:12px 0 }
+    .t-item::marker{ content:"" }
+    .t-dot{ position:absolute; left:-1px; top:2px; width:12px; height:12px; border-radius:50%; background:var(--primary); box-shadow:0 0 0 3px rgba(34,197,94,.18) }
+    .t-title{ font-weight:600 }
+    .faq details{ background:#0c1424; border:1px solid var(--border); border-radius:12px; padding:12px }
+    .faq details+details{ margin-top:10px }
+    .faq summary{ cursor:pointer }
+
+    .footer{ border-top:1px solid var(--border); color:var(--muted) }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:12px">
+      <div class="brand"><span class="dot" aria-hidden="true"></span><a href="/">AI Signals Trade FX</a></div>
+      <nav aria-label="Main Navigation">
+        <ul>
+          <li><a class="chip" href="/">Home</a></li>
+          <li><a class="chip" href="/donate">Donate</a></li>
+          <li><a class="chip active" href="/about">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:20px">
+    <h1 class="page-title">Về dự án</h1>
+    <p class="subtitle">Một nền tảng thử nghiệm tín hiệu giao dịch do AI vận hành, tập trung vào tính minh bạch và trải nghiệm người dùng.</p>
+
+    <section class="grid two" aria-label="Giới thiệu & Điểm nổi bật">
+      <div class="card">
+        <div class="card-header"><h2 class="card-title">Sứ mệnh</h2></div>
+        <div class="card-body">
+          <p class="lead">Chúng tôi xây dựng <strong>AI Signals Trade FX</strong> để giúp trader tiếp cận phân tích định lượng một cách dễ hiểu. Từ dữ liệu nến đến dự báo ngắn hạn, mọi thứ được trình bày trực quan và nhất quán, phù hợp cả trên điện thoại lẫn máy tính.</p>
+          <ul class="list" style="margin-top:12px">
+            <li>• Mở — giao diện gọn, API có thể tích hợp.</li>
+            <li>• Minh bạch — hiển thị xác suất, tham số mô hình.</li>
+            <li>• Lấy người dùng làm trung tâm — tốc độ, khả dụng, tối giản.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2 class="card-title">Tính năng chính</h2></div>
+        <div class="card-body">
+          <ul class="list">
+            <li><strong>Biểu đồ tương tác:</strong> thu phóng, pan, bật/tắt lớp dự báo.</li>
+            <li><strong>Tự học theo lịch:</strong> auto fetch & train theo khung thời gian.</li>
+            <li><strong>Tuỳ biến cao:</strong> nến hiển thị, smooth, stride, markers, prob.</li>
+            <li><strong>Nhẹ và nhanh:</strong> CSS thuần, không phụ thuộc framework nặng.</li>
+          </ul>
+          <div class="kpis" style="margin-top:12px">
+            <div class="kpi"><div class="num">5+</div><div class="cap">Chiến lược thử nghiệm</div></div>
+            <div class="kpi"><div class="num">12k</div><div class="cap">Cây nến/ngày xử lý</div></div>
+            <div class="kpi"><div class="num">99.9%</div><div class="cap">Uptime mục tiêu</div></div>
+            <div class="kpi"><div class="num"><span title="Tháng 8/2025">2025</span></div><div class="cap">Năm ra mắt bản beta</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px" aria-label="Đội ngũ">
+      <div class="card-header"><h2 class="card-title">Đội ngũ</h2></div>
+      <div class="card-body">
+        <div class="team">
+          <div class="member">
+            <div class="avatar"><span>ĐN</span></div>
+            <div>
+              <div><strong>Đạt Nguyễn</strong></div>
+              <div class="role">Founder • Product & Research</div>
+            </div>
+          </div>
+          <div class="member">
+            <div class="avatar"><span>TT</span></div>
+            <div>
+              <div><strong>Chat GPT</strong></div>
+              <div class="role">Frontend & UX</div>
+            </div>
+          </div>
+          <div class="member">
+            <div class="avatar"><span>HP</span></div>
+            <div>
+              <div><strong>Đạt Nguyễn</strong></div>
+              <div class="role">Backend • Infra</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px" aria-label="Dòng thời gian">
+      <div class="card-header"><h2 class="card-title">Dòng thời gian</h2></div>
+      <div class="card-body">
+        <ol class="timeline list">
+          <li class="t-item">
+            <span class="t-dot" aria-hidden="true"></span>
+            <div class="t-title">Q1/2025 — Ý tưởng & nguyên mẫu</div>
+            <div class="subtitle">Phác thảo luồng dữ liệu, kiểm thử mô hình baseline.</div>
+          </li>
+          <li class="t-item">
+            <span class="t-dot" aria-hidden="true"></span>
+            <div class="t-title">Q2/2025 — Bản alpha nội bộ</div>
+            <div class="subtitle">Kết nối dữ liệu thời gian thực, UI dark-first.</div>
+          </li>
+          <li class="t-item">
+            <span class="t-dot" aria-hidden="true"></span>
+            <div class="t-title">Q3/2025 — Beta công khai</div>
+            <div class="subtitle">Tối ưu hiệu năng, bổ sung auto-train theo lịch.</div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="card faq" style="margin-top:16px" aria-label="Câu hỏi thường gặp">
+      <div class="card-header"><h2 class="card-title">FAQ</h2></div>
+      <div class="card-body">
+        <details>
+          <summary><strong>Dự án có miễn phí không?</strong></summary>
+          <p>Phiên bản cơ bản miễn phí. Một số tính năng nâng cao có thể yêu cầu ủng hộ để duy trì hạ tầng.</p>
+        </details>
+        <details>
+          <summary><strong>Dữ liệu lấy từ đâu?</strong></summary>
+          <p>Từ các nguồn broker/kết nối hợp lệ (demo) phục vụ mục đích nghiên cứu và học thuật.</p>
+        </details>
+        <details>
+          <summary><strong>Có cam kết lợi nhuận không?</strong></summary>
+          <p>Không. Đây là công cụ tham khảo. Giao dịch luôn có rủi ro — hãy tự chịu trách nhiệm với quyết định của bạn.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px" aria-label="Liên hệ">
+      <div class="card-header"><h2 class="card-title">Liên hệ</h2></div>
+      <div class="card-body">
+        <ul class="list">
+          <li>Email: <a href="contact@datnguyentv.com">contact@datnguyentv.com</a></li>
+          <li>Facebook: <a href="https://facebook.com/nbdat92" target="_blank" rel="noopener">/nbdat92</a></li>
+          <li>GitHub: <a href="https://github.com/nbdat92" target="_blank" rel="noopener">@nbdat92</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container footer" style="padding:28px 16px 40px">
+    <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between">
+      <div>© 2025 <strong>GIA CÁT ÂY AI, Inc</strong></div>
+      <div style="display:flex; gap:10px">
+        <a class="chip" href="/donate">Donate</a>
+        <a class="chip" href="/">Trang chủ</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
