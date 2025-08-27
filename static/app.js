@@ -16,6 +16,7 @@
     showProb: document.getElementById('showProb'),
     showMarkers: document.getElementById('showMarkers'),
     refreshBtn: document.getElementById('refreshBtn'),
+    symb: document.getElementById('cfgSymbol'),
     cfg: {
       symbol: document.getElementById('cfgSymbol'),
       tf: document.getElementById('cfgTF'),
@@ -85,10 +86,10 @@
   function traces(d) {
     const candle = {
       x: d.time, open: d.open, high: d.high, low: d.low, close: d.close,
-      type: 'candlestick', name: 'XAUUSDm', increasing:{line:{width:1}}, decreasing:{line:{width:1}}
+      type: 'candlestick', name: el.symb.value, increasing:{line:{width:1}}, decreasing:{line:{width:1}}
     };
     const probLine = {
-      x: d.time, y: d.prob, mode:'lines', name:'prob_up (smoothed)',
+      x: d.time, y: d.prob, mode:'lines', name:'xác suất tăng giá',
       yaxis:'y2', opacity:0.6, visible: state.showProb ? true : 'legendonly'
     };
     const longM = {
