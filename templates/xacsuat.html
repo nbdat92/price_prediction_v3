@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Signals Trade FX — v2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f172a; --surface:#0b1220; --muted:#94a3b8; --text:#e5e7eb;
+      --primary:#22c55e; --ring:rgba(34,197,94,.35);
+      --card:#0b1220; --border:#1f2937; --red:#ef4444; --green:#22c55e; --amber:#f59e0b;
+    }
+    html,body{height:100%}
+    *{-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; color:var(--text);
+      background:
+        radial-gradient(1400px 900px at 10% -20%, #1e293b 0%, transparent 60%) no-repeat,
+        radial-gradient(1200px 800px at 120% -10%, #064e3b 0%, transparent 60%) no-repeat,
+        var(--bg);
+    }
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1200px;margin:0 auto;padding:16px}
+    /* Header */
+    .header{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);background:rgba(2,6,23,.6);border-bottom:1px solid var(--border)}
+    .brand{display:flex;gap:10px;align-items:center;font-weight:700;letter-spacing:.2px}
+    .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--primary);box-shadow:0 0 18px var(--ring)}
+    nav ul{list-style:none;display:flex;gap:8px;margin:0;padding:0}
+    .chip{padding:8px 12px;border-radius:10px;border:1px solid var(--border);color:#cbd5e1}
+    .chip.active{border-color:rgba(34,197,94,.45);color:#d1fae5;background:rgba(34,197,94,.08)}
+
+    /* Layout */
+    .grid{display:grid;gap:16px;grid-template-columns:1fr;align-items:start}
+    @media (min-width:1024px){.grid{grid-template-columns:360px 1fr}}
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0)),var(--card);
+      border:1px solid var(--border); border-radius:16px; overflow:hidden;
+      box-shadow:0 10px 28px rgba(2,6,23,.45)
+    }
+    .card-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+    .card-title{font-size:13px;letter-spacing:.35px;color:#cbd5e1;text-transform:uppercase}
+    .card-body{padding:16px}
+
+    /* KPI tiles — FIX lệch */
+    .summary{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:stretch;
+    }
+    .tile{
+      background:#0a111e;border:1px solid var(--border);border-radius:12px;padding:14px;
+      display:grid;grid-template-rows:24px 1fr;place-items:center;text-align:center;min-height:120px;
+    }
+    .tile .label{color:#94a3b8;font-size:12px;line-height:24px;white-space:nowrap}
+    .tile .kpi{font-size:28px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+    .muted{color:var(--muted)}
+
+    /* Today box */
+    .today{
+      border:1px dashed #1f344e; border-radius:12px; padding:14px; background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0));
+      margin-top:12px;
+    }
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 12px;font-weight:700;letter-spacing:.2px;
+    }
+    .b-buy{background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.35); color:#86efac}
+    .b-sell{background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.35); color:#fecaca}
+    .b-none{background:rgba(148,163,184,.1); border:1px solid rgba(148,163,184,.35); color:#cbd5e1}
+
+    /* Table */
+    table{width:100%;border-collapse:collapse;table-layout:fixed}
+    th,td{padding:10px 12px;border-bottom:1px solid var(--border)}
+    thead th{font-size:12px;letter-spacing:.3px;color:#cbd5e1;text-transform:uppercase}
+    tbody tr:hover{background:#0d1525}
+    td:nth-child(1){width:80px}
+    td:nth-child(2){width:110px;text-align:center}
+    td:nth-child(3){width:120px;text-align:right}
+    td:nth-child(4){width:120px;text-align:center}
+    .tag-buy{color:#86efac;font-weight:800}
+    .tag-sell{color:#fecaca;font-weight:800}
+    .ok{color:#22c55e;font-weight:700}
+    .bad{color:#ef4444;font-weight:700}
+    .no-trade{color:#a3b0c2;font-style:italic}
+
+    /* Pagination */
+    .pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:12px}
+    .pager a, .pager span{
+      min-width:34px;text-align:center;padding:8px 10px;border-radius:10px;border:1px solid var(--border);
+      background:#0a111e;color:#cbd5e1;text-decoration:none
+    }
+    .pager a:hover{border-color:#334155}
+    .pager .active{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.45);color:#d1fae5;font-weight:700}
+    .pager .disabled{opacity:.45;pointer-events:none}
+
+    .footer{border-top:1px solid var(--border);color:var(--muted)}
+
+
+    .header nav ul{
+  list-style:none;
+  display:flex;
+  gap:8px;
+  margin:0;
+  padding:0;
+}
+
+/* === Mobile layout: brand ở giữa, menu xuống dòng & căn giữa === */
+@media (max-width: 640px){
+  /* Đưa header thành layout dọc, brand ở giữa */
+  .header .container{
+    flex-direction: column;
+    align-items: center;   /* brand ra giữa */
+    justify-content: center;
+    gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .brand{
+    width: 100%;
+    justify-content: center;   /* căn giữa chữ + dot */
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  /* Menu chiếm 100% bề ngang, tự xuống dòng và căn giữa */
+  .header nav{
+    width: 100%;
+  }
+  .header nav ul{
+    justify-content: center;   /* căn giữa các chip */
+    flex-wrap: wrap;           /* cho phép xuống dòng */
+    overflow: visible;         /* bỏ scroll ngang cũ */
+  }
+
+  /* Chip gọn hơn và có khoảng cách dọc khi xuống dòng */
+  .chip{
+    padding: 6px 10px;
+    font-size: 13px;
+    line-height: 1;
+    margin-bottom: 6px;        /* khoảng cách giữa các hàng chip */
+    white-space: nowrap;       /* mỗi chip không tự bể dòng */
+  }
+}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div class="brand"><span class="dot" aria-hidden="true"></span><a href="/">AI Signals Trade FX</a></div>
+      <nav aria-label="Main Navigation">
+        <ul>
+          <li><a class="chip" href="/">Home</a></li>
+          <li><a class="chip" href="/donate">Donate</a></li>
+          <li><a class="chip" href="/xacsuat">Thống Kê</a></li>
+          <li><a class="chip active" href="/about">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:20px">
+    <div class="grid">
+      <!-- LEFT: Summary + Today -->
+      <section class="card">
+        <div class="card-header"><h2 class="card-title">KẾT QUẢ TỔNG HỢP</h2></div>
+        <div class="card-body">
+          <div class="summary">
+            <div class="tile">
+              <div class="label">Tổng số ngày</div>
+              <div class="kpi">{{summary.total}}</div>
+            </div>
+            <div class="tile">
+              <div class="label">Dự đoán Đúng</div>
+              <div class="kpi" style="color:#86efac">{{summary.correct}}</div>
+            </div>
+            <div class="tile">
+              <div class="label">Dự đoán Sai</div>
+              <div class="kpi" style="color:#fecaca">{{summary.wrong}}</div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="muted">
+            Tỉ lệ chính xác: <strong>{{ '{:.2f}%'.format(summary.acc*100 if summary.total else 0) }}</strong>
+          </div>
+
+          <!-- Today -->
+          <h3 style="margin:18px 0 8px;font-size:13px;color:#cbd5e1;letter-spacing:.35px;text-transform:uppercase">Dự đoán hôm nay</h3>
+          <div class="today">
+            {% if latest %}
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div class="muted">Ngày: <strong style="color:#e2e8f0">{{latest.ngay}}</strong></div>
+                <div>
+                  <span class="muted" style="margin-right:6px">Loại dự đoán:</span>
+                  {% if latest.no_trade %}
+                    <span class="badge b-none">NO TRADE</span>
+                  {% else %}
+                    {% set d = (latest.du_doan or '').upper() %}
+                    <span class="badge {{ 'b-buy' if d=='BUY' else 'b-sell' }}">{{ d }}</span>
+                  {% endif %}
+                </div>
+                <div class="muted">Tỉ lệ: <strong style="color:#fef3c7">{{latest.xac_suat_text}}</strong></div>
+              </div>
+            {% else %}
+              <div class="muted">Không có dữ liệu hôm nay</div>
+            {% endif %}
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Daily table -->
+      <section class="card">
+        <div class="card-header"><h2 class="card-title">BẢNG THỐNG KÊ TỪNG NGÀY</h2></div>
+        <div class="card-body" style="overflow:auto">
+          <table aria-label="Thống kê từng ngày">
+            <thead>
+              <tr>
+                <th>Ngày</th>
+                <th>Dự đoán</th>
+                <th>Xác suất</th>
+                <th>Kết Quả</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in rows %}
+              <tr class="{{ 'no-trade' if r.no_trade else '' }}">
+                <td>{{ r.ngay }}</td>
+                <td>
+                  {% if r.no_trade %}
+                    NO TRADE
+                  {% else %}
+                    {% set d = (r.du_doan or '').upper() %}
+                    <span class="{{ 'tag-buy' if d=='BUY' else 'tag-sell' if d=='SELL' else '' }}">{{ d }}</span>
+                  {% endif %}
+                </td>
+                <td>{{ r.xac_suat_text }}</td>
+                <td>
+                  {% if r.no_trade %}
+                    -
+                  {% else %}
+                    {% set k = (r.ket_qua or '').lower() %}
+                    <span class="{{ 'ok' if k=='đúng' else 'bad' if k=='sai' else '' }}">{{ r.ket_qua }}</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          {% if total_pages and total_pages > 1 %}
+          <div class="pager">
+            {% set prev_page = page - 1 %}
+            {% set next_page = page + 1 %}
+            <a href="?page=1" class="{{ 'disabled' if page==1 else '' }}" aria-label="Trang đầu">«</a>
+            <a href="?page={{prev_page}}" class="{{ 'disabled' if page==1 else '' }}" aria-label="Trang trước">‹</a>
+
+            {% set start = [1, page-3]|max %}
+            {% set end = [total_pages, page+3]|min %}
+            {% if start > 1 %}<span>…</span>{% endif %}
+            {% for p in range(start, end+1) %}
+              {% if p == page %}
+                <span class="active">{{p}}</span>
+              {% else %}
+                <a href="?page={{p}}">{{p}}</a>
+              {% endif %}
+            {% endfor %}
+            {% if end < total_pages %}<span>…</span>{% endif %}
+
+            <a href="?page={{next_page}}" class="{{ 'disabled' if page==total_pages else '' }}" aria-label="Trang sau">›</a>
+            <a href="?page={{total_pages}}" class="{{ 'disabled' if page==total_pages else '' }}" aria-label="Trang cuối">»</a>
+          </div>
+          {% endif %}
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="container footer" style="padding:28px 16px 40px">
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">
+      <div>© 2025 <strong>GIA CÁT ÂY AI, Inc</strong></div>
+      <div style="display:flex;gap:10px">
+        <a class="chip" href="https://facebook.com" aria-label="Facebook">Facebook</a>
+        <a class="chip" href="https://instagram.com" aria-label="Instagram">Instagram</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

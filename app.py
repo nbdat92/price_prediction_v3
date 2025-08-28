@@ -196,6 +196,64 @@ def schedule_job():
         scheduler.add_job(job_fetch_and_train, 'interval', minutes=interval_min, id='job')
     if not scheduler.running:
         scheduler.start()
+#-------- Read google sheet -----
+SPREADSHEET_ID = "12dWHM4nYj96SJkn-axgwqm8JODIMw4ROaUog2eh_TqE"
+GID = "738749811"
+
+def read_sheet():
+    import pandas as pd
+
+    csv_url = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/export?format=csv&gid={GID}"
+    raw = pd.read_csv(csv_url, header=None, dtype=str)
+
+    # Tìm dòng header thật (“Ngày” ở cột A)
+    hdr_idx = raw[0].astype(str).str.contains(r"^ *Ngày *$", na=False).idxmax()
+
+    # Lấy 4 cột A:D, đặt header
+    df = raw.iloc[hdr_idx+1:, :4].copy()
+    df.columns = raw.iloc[hdr_idx, :4].tolist()
+
+    # Làm sạch cơ bản
+    df = df.dropna(subset=["Ngày"])
+    # dùng .str.* (KHÔNG dùng .strip() trực tiếp)
+    df["Dự đoán"] = df["Dự đoán"].fillna("").astype(str).str.strip()
+    df["Kết Quả"]  = df["Kết Quả"].fillna("").astype(str).str.strip()
+
+    # Đánh dấu No Trade (vẫn giữ để hiển thị)
+    no_trade_mask = df["Dự đoán"].str.lower().eq("no trade")
+
+    # Chuẩn hóa xác suất (giữ text để hiển thị)
+    prob = (
+        df["Xác suất"].fillna("").astype(str)
+          .str.replace("%", "", regex=False)
+          .str.replace(",", ".", regex=False)
+    )
+    df["prob"] = pd.to_numeric(prob, errors="coerce") / 100.0
+
+    # Rows cho bảng chi tiết (gồm cả No Trade)
+    rows = [
+        dict(
+            ngay=r["Ngày"],
+            du_doan=r["Dự đoán"],
+            xac_suat_text=r["Xác suất"],
+            xac_suat=r["prob"],
+            ket_qua=r["Kết Quả"],
+            no_trade=(str(r["Dự đoán"]).lower() == "no trade"),
+        )
+        for _, r in df.iterrows()
+    ]
+
+    # Summary: chỉ tính dòng không phải No Trade
+    df_stat = df[~no_trade_mask]
+    total   = len(df_stat)
+    correct = (df_stat["Kết Quả"].str.lower() == "đúng").sum()
+    wrong   = (df_stat["Kết Quả"].str.lower() == "sai").sum()
+    acc     = (correct / total) if total else 0.0
+
+    summary = dict(total=total, correct=correct, wrong=wrong, acc=acc)
+     # Lấy dòng cuối cùng (hôm nay)
+    latest = rows[-1] if rows else None
+    return rows, summary, latest
 
 # ---------- ROUTES ----------
 @app.route("/")
@@ -209,6 +267,11 @@ def equity():
 @app.route("/donate")
 def donate():
     return render_template("donate.html")
+
+@app.get("/xacsuat")
+def xac_suat_page():
+    rows, summary, latest = read_sheet()
+    return render_template("xacsuat.html", rows=rows, summary=summary, latest=latest)
 
 @app.route("/about")
 def about():

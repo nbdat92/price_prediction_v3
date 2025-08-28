@@ -66,6 +66,53 @@
     .faq summary{ cursor:pointer }
 
     .footer{ border-top:1px solid var(--border); color:var(--muted) }
+
+    .header nav ul{
+  list-style:none;
+  display:flex;
+  gap:8px;
+  margin:0;
+  padding:0;
+}
+
+/* === Mobile layout: brand ở giữa, menu xuống dòng & căn giữa === */
+@media (max-width: 640px){
+  /* Đưa header thành layout dọc, brand ở giữa */
+  .header .container{
+    flex-direction: column;
+    align-items: center;   /* brand ra giữa */
+    justify-content: center;
+    gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .brand{
+    width: 100%;
+    justify-content: center;   /* căn giữa chữ + dot */
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  /* Menu chiếm 100% bề ngang, tự xuống dòng và căn giữa */
+  .header nav{
+    width: 100%;
+  }
+  .header nav ul{
+    justify-content: center;   /* căn giữa các chip */
+    flex-wrap: wrap;           /* cho phép xuống dòng */
+    overflow: visible;         /* bỏ scroll ngang cũ */
+  }
+
+  /* Chip gọn hơn và có khoảng cách dọc khi xuống dòng */
+  .chip{
+    padding: 6px 10px;
+    font-size: 13px;
+    line-height: 1;
+    margin-bottom: 6px;        /* khoảng cách giữa các hàng chip */
+    white-space: nowrap;       /* mỗi chip không tự bể dòng */
+  }
+}
   </style>
 </head>
 <body>
@@ -77,6 +124,7 @@
         <ul>
           <li><a class="chip" href="/">Home</a></li>
           <li><a class="chip" href="/donate">Donate</a></li>
+          <li><a class="chip" href="/xacsuat">Thống Kê</a></li>
           <li><a class="chip active" href="/about">About</a></li>
         </ul>
       </nav>
